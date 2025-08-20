@@ -5,6 +5,1074 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 		<title>Document</title>
+		<style>
+			/* root */
+			@font-face {
+				font-family: "Paperlogy-4Regular";
+				src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2")
+					format("woff2");
+				font-weight: 400;
+				font-style: normal;
+			}
+
+			@font-face {
+				font-family: "Paperlogy-9Black";
+				src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-9Black.woff2")
+					format("woff2");
+				font-weight: 900;
+				font-style: normal;
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				list-style: none;
+			}
+
+			a {
+				text-decoration: none;
+				color: inherit;
+			}
+
+			html,
+			body {
+				font-family: "Paperlogy-9Black";
+				/* background-color: #204e91; */
+
+				background: linear-gradient(135deg, #204e91, #0a2a66, #000000);
+				background: linear-gradient(135deg, #204e91, #163d86, #000000);
+
+				overflow: auto;
+			}
+
+			/* Fixed buttons */
+			.fixed-btn {
+				position: fixed;
+				top: 20px;
+				right: 40px;
+				display: flex;
+				width: 90px;
+				justify-content: space-between;
+				align-items: center;
+				z-index: 998;
+			}
+
+			.fixed-btn img,
+			.fixed-movetop img {
+				width: 100%;
+			}
+
+			.fixed-movetop {
+				position: fixed;
+				bottom: 60px;
+				right: 60px;
+				display: flex;
+				width: 30px;
+				justify-content: space-between;
+				align-items: center;
+				opacity: 0.8;
+				z-index: 998;
+				cursor: pointer;
+			}
+
+			.fixed-movetop::before {
+				content: "";
+				top: 50%;
+				left: 50%;
+				position: absolute;
+				transform: translate(-50%, -50%);
+				width: 45px;
+				height: 45px;
+				border-radius: 50%;
+				background-color: #fff;
+				box-shadow: 0px 5px 5px #33333350;
+				z-index: -1;
+			}
+
+			.fixed-movetop img {
+				transform: rotate(90deg);
+			}
+
+			.home-btn,
+			.reset-btn {
+				font-family: "Paperlogy-4Regular";
+				width: 30px;
+				cursor: pointer;
+				position: relative;
+				font-size: 14px;
+				font-weight: normal;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.home-btn::before {
+				content: "Website";
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%) scale(0);
+				color: white;
+				background-color: #333;
+				padding: 6px 12px;
+				border-radius: 5px;
+				transition: all 0.3s ease;
+				z-index: -2;
+			}
+
+			.reset-btn::before {
+				content: "Return";
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%) scale(0);
+				color: white;
+				background-color: #333;
+				padding: 6px 12px;
+				border-radius: 5px;
+				transition: all 0.3s ease;
+				z-index: -2;
+			}
+
+			.home-btn:hover::before,
+			.reset-btn:hover::before {
+				transform: translate(-50%, 100%) scale(1);
+			}
+
+			.home-btn::after,
+			.reset-btn::after {
+				content: "";
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				width: 100%;
+				height: 100%;
+				border-radius: 50%;
+				padding: 8px;
+				transform: translate(-50%, -50%);
+				/* background-color: #204e91; */
+				box-shadow: 0px 0px 5px #ffffff50;
+				z-index: -1;
+			}
+
+			/* 리셋 화면 */
+			.reset-overlay {
+				position: fixed;
+				width: 100%;
+				height: 100vh;
+				background-color: #333;
+				left: 0;
+				top: 0;
+				z-index: 999;
+				clip-path: ellipse(2500px 2500px at 0% 100%);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				animation: reset-out 1s ease-in-out 0.5s forwards;
+			}
+
+			.reset-logo {
+				width: 400px;
+			}
+
+			.reset-logo img {
+				width: 100%;
+			}
+
+			.reset-in {
+				display: flex;
+				animation: reset-in 1s ease-in-out forwards;
+			}
+
+			@keyframes reset-in {
+				0% {
+					clip-path: ellipse(0px 0px at 100% 0%);
+				}
+				100% {
+					clip-path: ellipse(2500px 2500px at 100% 0%);
+				}
+			}
+
+			.reset-out {
+				display: flex;
+				animation: reset-out 1s ease-in-out forwards 0.5s;
+			}
+
+			@keyframes reset-out {
+				0% {
+					clip-path: ellipse(2500px 2500px at 0% 100%);
+				}
+				100% {
+					clip-path: ellipse(0px 0px at 0% 100%);
+				}
+			}
+
+			/* BODY 부분 */
+			/* INDEX 컨테이너 */
+			.container {
+				width: 100%;
+				height: 100vh;
+				padding: 50px;
+				display: grid;
+				transition: all 0.6s ease;
+				position: relative;
+			}
+
+			/* 화면전환 애니메이션 */
+			.initial-overlay {
+				width: 100%;
+				height: 100vh;
+				position: fixed;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				opacity: 1;
+				transition: all 0.6s;
+			}
+
+			.initials {
+				color: white;
+				font-size: 10rem;
+				position: relative;
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+				text-align: center;
+				width: 60%;
+				height: 50vh;
+				align-items: center;
+			}
+
+			.overlay-text {
+				transform: translateX(-60px);
+				/* clip-path: inset(0% 0% 0% 100%); */
+				/* transform-origin: bottom; */
+				opacity: 0;
+			}
+
+			.initial-move {
+				animation: initial-move 1s ease forwards;
+			}
+
+			@keyframes initial-move {
+				100% {
+					transform: translateX(0);
+					opacity: 1;
+				}
+			}
+
+			/* .overlay-text {
+				transform: translateY(-1000px) scaleY(1);
+				transform-origin: bottom;
+				opacity: 0;
+			}
+
+			@keyframes initial-move {
+				0% {
+					transform: translateY(-1000px) scaleY(0.6);
+					opacity: 0;
+				}
+
+				45% {
+					transform: translateY(80px) scaleY(0.3);
+					opacity: 0.5;
+				}
+
+				80% {
+					transform: translateY(-30px) scaleY(1);
+					opacity: 1;
+				}
+
+				100% {
+					transform: translateY(0%) scaleY(1);
+					opacity: 1;
+				}
+			} */
+
+			/* 메뉴 타이틀 */
+			.title-line {
+				font-weight: bold;
+				cursor: pointer;
+				height: 100%;
+				transition: all 0.6s ease;
+				overflow: visible;
+				position: relative;
+				line-height: 1;
+				min-height: 150px;
+			}
+
+			.main-title {
+				display: flex;
+				align-items: center;
+				justify-content: start;
+			}
+
+			.text-box {
+				position: absolute;
+				display: flex;
+				align-items: center;
+				justify-content: start;
+				width: 100%;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, -50%);
+			}
+
+			.title-line:hover .text-outline {
+				color: white;
+			}
+
+			.text-initial {
+				color: #fff;
+				z-index: 2;
+				transition: all 0.6s ease;
+				height: 100%;
+				opacity: 1;
+				display: inline-block;
+				font-size: 10vw;
+				transform: translateX(0);
+				/* clip-path: inset(0% 0% 0% 0%); */
+			}
+
+			.text-outline {
+				color: transparent;
+				-webkit-text-stroke: 2px white;
+				z-index: 1;
+				clip-path: inset(0% 0% 0% 0%);
+				letter-spacing: 5px;
+				opacity: 1;
+				display: inline-block;
+				transition: all 0.3s ease;
+				transform: translateX(0);
+				font-size: 10vw;
+			}
+
+			.text-collapse {
+				animation: text-collapse 0.6s ease forwards;
+				color: #fff;
+				-webkit-text-stroke: 0;
+			}
+
+			@keyframes text-collapse {
+				0% {
+					transform: translateX(0);
+					clip-path: inset(0% 0% 0% 0%);
+					opacity: 1;
+				}
+				100% {
+					transform: translateX(-100%);
+					clip-path: inset(0% 0% 0% 100%);
+					opacity: 0;
+				}
+			}
+
+			.initial-collapse {
+				animation: initial-collapse 0.6s ease forwards;
+			}
+
+			@keyframes initial-collapse {
+				100% {
+					transform: translateX(-60px);
+					opacity: 0;
+				}
+			}
+
+			/* @keyframes initial-collapse {
+				0% {
+					transform: translateY(0%);
+					opacity: 1;
+				}
+				100% {
+					transform: translateY(-500%);
+					opacity: 0;
+				}
+			} */
+
+			.fade-out {
+				opacity: 0;
+			}
+
+			#title-epics .text-outline {
+				animation-delay: 0s;
+			}
+			#title-project .text-outline {
+				animation-delay: 0.15s;
+			}
+			#title-insight .text-outline {
+				animation-delay: 0.25s;
+			}
+			#title-contact .text-outline {
+				animation-delay: 0.35s;
+			}
+			#title-service .text-outline {
+				animation-delay: 0.5s;
+			}
+
+			.overlay-text:nth-child(1),
+			#title-epics .text-initial {
+				animation-delay: 0.45s;
+			}
+
+			.overlay-text:nth-child(2),
+			#title-project .text-initial {
+				animation-delay: 0.6s;
+			}
+
+			.overlay-text:nth-child(3),
+			#title-insight .text-initial {
+				animation-delay: 0.7s;
+			}
+
+			.overlay-text:nth-child(4),
+			#title-contact .text-initial {
+				animation-delay: 0.8s;
+			}
+
+			.overlay-text:nth-child(5),
+			#title-service .text-initial {
+				animation-delay: 0.95s;
+			}
+
+			/* 화면전환 공통 애니메이션 */
+			.clip-reveal {
+				display: block !important;
+				animation: circle-reveal 3s ease forwards;
+			}
+
+			@keyframes circle-reveal {
+				0% {
+					clip-path: circle(0% at 0% 0%);
+					opacity: 0;
+				}
+				90% {
+					clip-path: circle(150% at 0% 0%);
+					opacity: 1;
+				}
+				95% {
+					clip-path: circle(3000% at 0% 0%);
+					opacity: 1;
+				}
+				100% {
+					clip-path: inset(0);
+					opacity: 1;
+				}
+			}
+
+			/* 컨텐츠 공통 헤더 */
+			.page-header {
+				position: fixed;
+				display: flex;
+				gap: 20px;
+				padding: 30px 60px;
+				z-index: 98;
+				align-items: center;
+			}
+
+			.page-title {
+				opacity: 1;
+				text-shadow: 0px 0px 5px #204e91;
+				font-size: 60px;
+			}
+
+			.page-engtitle {
+				opacity: 0.3;
+				font-size: 35px;
+				text-shadow: 0px 0px 5px #204e91;
+			}
+
+			.back-btn {
+				width: 40px;
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+			}
+			.back-btn img {
+				width: 100%;
+			}
+
+			/* 컨텐츠 페이지 WRAP */
+			.content-pages {
+				position: relative;
+				width: 100%;
+				pointer-events: auto;
+			}
+
+			/* 컨텐츠 페이지 */
+			.content-page {
+				position: relative;
+				width: 100%;
+				min-height: 100vh;
+				/* background-color: #204e91; */
+				color: #fff;
+				display: none;
+				clip-path: circle(0% at 0% 0%);
+			}
+
+			.content-pages img {
+				width: 100%;
+			}
+
+			.content-page.page-show {
+				display: block;
+				z-index: 99;
+				animation: circle-reveal 2s ease-in-out forwards;
+			}
+
+			/* 다운로드 섹션 */
+			.down-banner {
+				margin-bottom: 10px;
+				font-size: 18px;
+				display: flex;
+				align-items: center;
+				justify-content: end;
+			}
+
+			.down-btn {
+				display: block;
+				max-width: 250px;
+			}
+
+			.down-wrap {
+				background-color: #ffffff20;
+				padding: 3px 12px;
+				border-radius: 5px;
+				display: flex;
+				align-items: center;
+				justify-content: end;
+				gap: 10px;
+			}
+
+			.down-btn img {
+				width: 40px;
+			}
+
+			/* 컨텐츠 공통 BODY */
+			.page-body {
+				position: relative;
+				width: 100%;
+				min-height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				text-align: center;
+			}
+
+			.sub-menu {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 50px;
+				transform: translateY(-25px);
+			}
+
+			#page-contact .sub-menu,
+			#page-service .sub-menu,
+			#page-insight .sub-menu {
+				grid-template-columns: 1fr;
+				gap: 30px;
+			}
+
+			.sub-title {
+				perspective: 1000px;
+				position: relative;
+				height: 100%;
+				font-size: 90px;
+			}
+
+			.prepare::before {
+				font-family: "Paperlogy-4Regular";
+				content: "준비중";
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+				background-color: rgba(0, 0, 0, 0.8);
+				z-index: 15;
+				color: white;
+				pointer-events: none;
+				border-radius: 15px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				opacity: 0;
+				font-size: 50px;
+				transform: translateY(25px);
+				transition: all 0.6s;
+			}
+
+			.prepare::after {
+				content: "";
+				position: absolute;
+				inset: 0; /* 전체 덮기 */
+				background: transparent;
+				cursor: default;
+			}
+
+			.prepare:hover::before {
+				opacity: 1;
+			}
+
+			.sub-text {
+				opacity: 0.15;
+				transform: translateY(50px) translateZ(-1000px);
+				transition: all 0.5s;
+			}
+			.sub-title:hover .sub-text {
+				transform: translateY(100px) translateZ(0px);
+				opacity: 1;
+			}
+
+			.main-text {
+				opacity: 1;
+				transform: translateY(0) translateZ(0px);
+				transition: all 0.5s;
+			}
+			.sub-title:hover .main-text {
+				transform: translateY(-50px) translateZ(-1000px);
+				opacity: 0.15;
+			}
+
+			/* 본문 컨테이너 */
+			.content-box {
+				position: relative;
+				width: 90%;
+				min-height: 100vh;
+				/* padding: 0 240px; */
+				margin-bottom: 60px;
+			}
+
+			/* 헤더 부분 높이 보충 */
+			.blank-section {
+				width: 100%;
+				height: 15vh;
+				z-index: -1;
+			}
+
+			/* 컨텐츠 공통 애니메이션 */
+			.contents {
+				transform: translateY(30px);
+				opacity: 0;
+				transition: all 0.5s ease;
+				display: block;
+			}
+
+			.content-view {
+				transform: translateY(0);
+				opacity: 1;
+			}
+
+			/* 홈페이지 상세페이지 카드 */
+			.card-wrap {
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr 1fr;
+				gap: 20px;
+			}
+
+			#page-promotions .card-wrap {
+				grid-template-columns: 1fr 1fr;
+			}
+
+			#page-promotions .img-card {
+				height: 450px;
+			}
+
+			#page-business .card-wrap {
+				grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+			}
+
+			#page-business .img-card {
+				aspect-ratio: 1 / 1;
+			}
+
+			.img-card {
+				height: 100%;
+				max-height: 650px;
+			}
+
+			.card-wrap {
+				margin-top: 30px;
+			}
+
+			.img-card {
+				display: block;
+				position: relative;
+				cursor: pointer;
+				overflow: hidden;
+				width: 100%;
+				/* height: auto; */
+				border-radius: 15px;
+				box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.3);
+			}
+
+			/* 상세페이지 호버 애니메이션 */
+			[data-upper="detail"] .img-card:hover > img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				object-position: 0% 0%;
+				animation: img-move-detail 15s ease infinite;
+			}
+
+			@keyframes img-move-detail {
+				0% {
+					object-position: 0% 0%;
+				}
+
+				30% {
+					object-position: 0% 20%;
+				}
+
+				60% {
+					object-position: 0% 40%;
+				}
+
+				90% {
+					object-position: 0% 60%;
+				}
+
+				100% {
+					object-position: 0% 60%;
+				}
+			}
+
+			/* 홈페이지 호버 애니메이션 */
+			[data-upper="homepage"] .img-card:hover > img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				object-position: 0% 0%;
+				animation: img-move-home 10s ease infinite;
+			}
+
+			#page-promotions .img-card:hover > img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				object-position: 0% 0%;
+				animation: img-move-home 10s ease infinite;
+			}
+
+			@keyframes img-move-home {
+				0% {
+					object-position: 0% 0%;
+				}
+
+				30% {
+					object-position: 0% 30%;
+				}
+
+				60% {
+					object-position: 0% 60%;
+				}
+
+				90% {
+					object-position: 0% 100%;
+				}
+
+				100% {
+					object-position: 0% 100%;
+				}
+			}
+
+			/* 카드 디자인 */
+			.card-overlay {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.7);
+				opacity: 1;
+				z-index: 2;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				flex-direction: column;
+				gap: 20px;
+			}
+
+			/* 상세페이지 모달 */
+			.link-btn {
+				font-family: "Paperlogy-4Regular";
+				font-size: 20px;
+				padding: 10px 20px;
+				background-color: #fff;
+				color: #333;
+				box-shadow: 0px 0px 15px #fff;
+				border-radius: 20px;
+			}
+
+			.viewer-bg {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.8);
+				z-index: 999;
+			}
+
+			.card-viewer {
+				position: relative;
+				width: 100%;
+				height: 100%;
+				overflow: auto;
+				display: flex;
+				justify-content: center;
+				align-items: flex-start;
+				padding: 40px 0;
+			}
+
+			.card-viewer img {
+				width: 30%;
+				height: auto;
+			}
+
+			.alert-box {
+				font-size: 30px;
+				color: white;
+				background-color: #204e91;
+				padding: 8px 16px;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				border-radius: 15px;
+				opacity: 1;
+				z-index: 1000;
+			}
+
+			.bizcard {
+				max-width: auto;
+				height: 100%;
+			}
+
+			.card-logo {
+				max-width: 300px;
+				z-index: 3;
+			}
+
+			.card-title {
+				font-size: 40px;
+			}
+
+			/* 미디어쿼리 */
+			@media (max-width: 1024px) {
+				.sub-menu {
+					grid-template-columns: 1fr;
+					transform: none;
+					gap: 50px;
+				}
+				.card-wrap {
+					grid-template-columns: 1fr 1fr;
+					margin-top: 0;
+					gap: 40px;
+				}
+			}
+
+			@media (max-width: 768px) {
+				.fixed-btn {
+					width: auto;
+					top: 20px;
+					right: 20px;
+					gap: 30px;
+					flex-direction: column;
+				}
+				.home-btn,
+				.reset-btn {
+					width: 25px;
+				}
+
+				.home-btn::before,
+				.reset-btn::before {
+					display: none;
+				}
+
+				.fixed-movetop {
+					bottom: 30px;
+					right: 30px;
+					width: 20px;
+				}
+
+				.fixed-movetop::before {
+					width: 35px;
+					height: 35px;
+				}
+
+				.reset-logo {
+					width: 200px;
+				}
+
+				.container {
+					height: 100vh;
+					padding: 30px;
+				}
+
+				/* 화면전환 사이즈 */
+				.initials {
+					font-size: 50px;
+				}
+
+				.initials {
+					width: 80%;
+				}
+
+				/* 메뉴 타이틀 사이즈 */
+				.title-line {
+					min-height: 80px;
+				}
+
+				.text-box {
+					display: flex;
+					justify-content: start;
+					align-items: end;
+				}
+
+				.text-initial {
+					font-size: 23vw;
+				}
+
+				.text-outline {
+					font-size: 13vw;
+					-webkit-text-stroke: 0.5px white;
+					margin-bottom: 5px;
+				}
+
+				.down-banner {
+					justify-content: start;
+				}
+
+				/* 페이지 헤더 */
+				.page-header {
+					height: 10vh;
+					padding: 20px;
+					gap: 10px;
+				}
+
+				.back-btn {
+					width: 26px;
+				}
+
+				.page-title {
+					font-size: 30px;
+				}
+
+				.page-engtitle {
+					font-size: 16px;
+				}
+
+				/* Depth2 서브메뉴 */
+				.main-text {
+					transform: none;
+					font-size: 50px;
+				}
+
+				.sub-text {
+					transform: none;
+					font-size: 30px;
+				}
+
+				.sub-title {
+					transform: none;
+				}
+
+				.sub-title:hover .sub-text {
+					transform: none;
+				}
+
+				.sub-title:hover .main-text {
+					transform: none;
+				}
+
+				.prepare::before {
+					transform: translateY(0px);
+					pointer-events: none;
+				}
+
+				.down-banner {
+					font-size: 12px;
+				}
+
+				.down-wrap {
+					gap: 5px;
+					padding: 4px 8px;
+				}
+
+				.down-btn img {
+					width: 25px;
+				}
+
+				/* 카드 */
+				.card-wrap {
+					grid-template-columns: 1fr !important;
+				}
+
+				.img-card {
+					width: 85%;
+					margin: 0 auto;
+					max-height: 500px;
+				}
+
+				[data-upper="detail"] .img-card:hover img {
+					animation: none;
+				}
+
+				#page-business .card-wrap {
+					grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+				}
+
+				.card-title {
+					font-size: 30px;
+				}
+
+				.link-btn {
+					font-size: 16px;
+					padding: 8px 16px;
+				}
+
+				.alert-box {
+					font-size: 20px;
+					width: 300px;
+					text-align: center;
+				}
+			}
+
+			@media (max-width: 375px) {
+				.back-btn {
+					width: 26px;
+				}
+
+				.page-title {
+					font-size: 24px;
+				}
+
+				.page-engtitle {
+					font-size: 14px;
+				}
+
+				/* Depth2 서브메뉴 */
+				.main-text {
+					transform: none;
+					font-size: 40px;
+				}
+
+				.sub-text {
+					transform: none;
+					font-size: 25px;
+				}
+
+				.img-card {
+					width: 80%;
+					margin: 0 auto;
+					max-height: 350px;
+				}
+
+				.card-title {
+					font-size: 24px;
+				}
+			}
+		</style>
 	</head>
 	<body>
 		<!-- 리셋 오버레이 -->
@@ -85,7 +1153,11 @@
 			<!-- INDEX > EPICS DESIGN -->
 			<div class="content-page" id="page-epics" data-upper="home">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">EPICS DESIGN</div>
 				</div>
 
@@ -106,7 +1178,11 @@
 			<!-- INDEX > EPICS EPICS DESIGN > 회사소개서 OVERVIEW -->
 			<div class="content-page" id="page-overview" data-upper="epics">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">회사소개서</div>
 					<div class="page-engtitle">OVERVIEW</div>
 				</div>
@@ -199,7 +1275,9 @@
 								href="https://drive.usercontent.google.com/u/0/uc?id=1p6_nAwBbWAwJrh2teHaURff69Q8iojtn&export=download">
 								<div class="down-wrap">
 									<span>PDF DOWNLOAD</span>
-									<img src="img/down2.png" alt="download" />
+									<img
+										src="https://lh3.googleusercontent.com/Qbh6zndaynCexyjWFy-YohrV7I0pfhJrPFb0lqjwl1V3ymC7bXAULR6bkDPpZRFVHKWNrXjRHt41yBfrqQYYNwqqEVb_efhZclTyjwlR6EynzjNlb9EUqg=s0"
+										alt="download" />
 								</div>
 							</a>
 						</div>
@@ -236,7 +1314,11 @@
 			<!-- INDEX > PROJECT -->
 			<div class="content-page" id="page-project" data-upper="home">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">PROJECT</div>
 				</div>
 				<div class="page-body">
@@ -266,7 +1348,11 @@
 			<!--  INDEX > PROJECT > HOMEPAGE -->
 			<div class="content-page" id="page-homepage" data-upper="project">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">홈페이지</div>
 					<div class="page-engtitle">HOMEPAGE</div>
 				</div>
@@ -296,7 +1382,11 @@
 			<!-- INDEX > PROJECT > HOMEPAGE > CORPORATE -->
 			<div class="content-page" id="page-corporate" data-upper="homepage">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">기업형</div>
 					<div class="page-engtitle">CORPORATE</div>
 				</div>
@@ -334,7 +1424,11 @@
 			<!-- INDEX > PROJECT > HOMEPAGE > E-COMMERCE -->
 			<div class="content-page" id="page-ecommerce" data-upper="homepage">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">쇼핑몰</div>
 					<div class="page-engtitle">E-COMMERCE</div>
 				</div>
@@ -361,7 +1455,11 @@
 			<!-- INDEX > PROJECT > HOMEPAGE > COMBINED -->
 			<div class="content-page" id="page-combined" data-upper="homepage">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">복합형</div>
 					<div class="page-engtitle">COMBINED</div>
 				</div>
@@ -388,7 +1486,11 @@
 			<!-- INDEX > PROJECT > HOMEPAGE > BRAND -->
 			<div class="content-page" id="page-brand" data-upper="homepage">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">브랜드</div>
 					<div class="page-engtitle">BRAND</div>
 				</div>
@@ -406,7 +1508,11 @@
 			<!-- INDEX > PROJECT > DETAIL -->
 			<div class="content-page" id="page-detail" data-upper="project">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">상세페이지</div>
 					<div class="page-engtitle">DETAIL PAGE</div>
 				</div>
@@ -436,7 +1542,11 @@
 			<!-- INDEX > PROJECT > DETAIL > FOOD -->
 			<div class="content-page" id="page-food" data-upper="detail">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">음식</div>
 					<div class="page-engtitle">FOOD</div>
 				</div>
@@ -610,7 +1720,11 @@
 			<!-- INDEX > PROJECT > DETAIL > ELECTRONICS -->
 			<div class="content-page" id="page-electronics" data-upper="detail">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">전기/전자</div>
 					<div class="page-engtitle">ELECTRONICS</div>
 				</div>
@@ -652,7 +1766,11 @@
 			<!-- INDEX > PROJECT > DETAIL > FASHION -->
 			<div class="content-page" id="page-fashion" data-upper="detail">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">패션/뷰티</div>
 					<div class="page-engtitle">FASHION/BEAUTY</div>
 				</div>
@@ -693,7 +1811,11 @@
 			<!-- INDEX > PROJECT > DETAIL > HOUSEHOLD -->
 			<div class="content-page" id="page-household" data-upper="detail">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">생활용품</div>
 					<div class="page-engtitle">HOUSEHOLD</div>
 				</div>
@@ -760,7 +1882,11 @@
 			<!-- INDEX > PROJECT > PRODUCTS -->
 			<div class="content-page" id="page-products" data-upper="project">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">명함/판촉물</div>
 					<div class="page-engtitle">PRODUCTS</div>
 				</div>
@@ -782,7 +1908,11 @@
 			<!-- INDEX > PROJECT > PRODUCTS > BUSINESS CARD -->
 			<div class="content-page" id="page-business" data-upper="products">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">명함</div>
 					<div class="page-engtitle">BUSINESS CARD</div>
 				</div>
@@ -859,7 +1989,11 @@
 			<!-- INDEX > PROJECT > PRODUCTS > PROMOTIONS -->
 			<div class="content-page" id="page-promotions" data-upper="products">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">판촉물</div>
 					<div class="page-engtitle">PROMOTIONS</div>
 				</div>
@@ -913,7 +2047,11 @@
 			<!-- 마케팅 MARKETING 서브페이지 시작 -->
 			<div class="content-page" id="page-marketing" data-upper="project">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">마케팅</div>
 					<div class="page-engtitle">MARKETING</div>
 				</div>
@@ -930,7 +2068,11 @@
 			<!-- INDEX > INSIGHT -->
 			<div class="content-page" id="page-insight" data-upper="home">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">INSIGHT</div>
 				</div>
 				<div class="page-body">
@@ -953,7 +2095,11 @@
 			<!-- INDEX > CONTACT US -->
 			<div class="content-page" id="page-contact" data-upper="home">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">CONTACT US</div>
 				</div>
 				<div class="page-body">
@@ -984,7 +2130,11 @@
 			<!-- INDEX > SERVICE -->
 			<div class="content-page" id="page-service" data-upper="home">
 				<div class="page-header">
-					<div class="back-btn"><img src="img/backbtn.png" alt="back" /></div>
+					<div class="back-btn">
+						<img
+							src="https://lh3.googleusercontent.com/9prXRVPJoBSKSlhq7fEJE7mZKT9gdYHRq2wzmOKwP-opmqpTd_vbWBViNCpCSAXdHXp0sFDOxzVCP8MluYXzSnZAei2KiWYUkaUGGzFgSchK5czg4SJT=s0"
+							alt="back" />
+					</div>
 					<div class="page-title">SERVICE</div>
 				</div>
 				<div class="page-body">
@@ -1009,4 +2159,176 @@
 			<!-- 서브페이지 시작 -->
 		</div>
 	</body>
+
+	<script>
+		$(document).ready(function () {
+			let isMobile = window.innerWidth < 768;
+
+			//타이틀 클릭
+			$(".title-line").on("click", function () {
+				const $clicked = $(this);
+				const id = $clicked.attr("id"); // 예: "title-epics"
+				const key = id.split("title-")[1]; // "epics"
+
+				if (key === "marketing") return;
+				if (key === "brand") return;
+
+				if ($(this).is(".main-title")) {
+					$(".main-title").css("pointer-events", "none");
+					$(".main-title .text-outline").addClass("text-collapse");
+					setTimeout(() => {
+						$(".overlay-text").addClass("initial-move");
+						$(".text-initial").addClass("initial-collapse");
+					}, 300);
+					setTimeout(() => {}, 600);
+
+					setTimeout(() => {
+						$(".container").addClass("fade-out");
+						$(".initial-overlay").addClass("fade-out");
+					}, 2100);
+
+					setTimeout(() => {
+						$(".container").css("display", "none");
+						$(".content-page").removeClass("page-show");
+						$("#page-" + key).addClass("page-show");
+					}, 2700);
+
+					setTimeout(() => {
+						$(".content-page").removeClass("page-show");
+						$("#page-" + key).addClass("page-show");
+					}, 2600);
+				} else {
+					$(".content-page").removeClass("page-show");
+					$("#page-" + key).addClass("page-show");
+				}
+			});
+
+			//뒤로가기
+			$(".back-btn").on("click", function () {
+				const $currentPage = $(this).closest(".content-page");
+				const upperPageKey = $currentPage.data("upper"); // data-upper 값 읽기
+
+				// 현재 페이지 숨기기
+				$currentPage.removeClass("page-show");
+
+				// 상위 페이지 보여주기
+				if (upperPageKey == "home") {
+					$(".container").removeClass("fade-out");
+					$(".container").css("display", "grid");
+					$(".main-title .text-outline").removeClass("text-collapse");
+					$(".text-outline").css("display", "inline-block");
+					$(".main-title .text-initial").removeClass("initial-collapse");
+					$(".main-title").css("pointer-events", "all");
+					$(".container").addClass("reset-in");
+					$(".initial-overlay").removeClass("fade-out");
+					$(".overlay-text").removeClass("initial-move");
+				} else {
+					$("#page-" + upperPageKey).addClass("page-show");
+				}
+			});
+
+			$("#page-insight, #page-contact, #page-service").on(
+				"click",
+				".title-line",
+				function () {
+					const url = $(this).data("url"); // data-url 읽기
+					if (url) {
+						window.open(url, "_blank"); // 해당 url로 이동
+					}
+				}
+			);
+
+			function getScrollbarWidth() {
+				return window.innerWidth - document.documentElement.clientWidth;
+			}
+
+			$(".home-btn, .img-card").on("click", function () {
+				const url = $(this).data("url");
+				if (url) {
+					window.open(url, "_blank");
+					return;
+				}
+				let imgSrc = $(this).find(".detail-img").data("src");
+				let isBizcard = $(this).closest("#page-business").length > 0;
+
+				$(".card-viewer").html('<img src="' + imgSrc + '" alt="">');
+				$(".card-viewer").animate({ scrollTop: 0 });
+				$(".content-page").css("overflow", "hidden");
+				$(".alert-box").fadeOut(1500);
+
+				if (!isMobile) {
+					$(".content-page").css("padding-right", "15px");
+
+					if (isBizcard) {
+						console.log("PC-CARD");
+						$(".card-viewer").css("align-items", "center");
+						$(".card-viewer").find("img").css({
+							width: "45%",
+						});
+					} else {
+						console.log("PC-NO CARD");
+						$(".card-viewer").css("align-items", "flex-start");
+						$(".card-viewer").find("img").css({
+							width: "40%",
+						});
+					}
+				} else {
+					$(".card-viewer").find("img").css("width", "90%");
+
+					if (isBizcard) {
+						console.log("MO-CARD");
+						$(".card-viewer").css("align-items", "center");
+					} else {
+						console.log("MO-NO CARD");
+						$(".card-viewer").css("align-items", "flex-start");
+					}
+				}
+				$(".viewer-bg").fadeIn(300);
+			});
+
+			// 뷰어 영역 클릭 시 닫기
+			$(".viewer-bg").on("click", function () {
+				// 이미지 클릭이 아니라 바탕 클릭일 때만 닫기
+				$(".viewer-bg").fadeOut(300);
+				$(".alert-box").fadeIn(1000);
+				$(".content-page").css({
+					overflow: "auto",
+					"padding-right": "",
+				});
+			});
+
+			$(".fixed-movetop").on("click", function () {
+				$("html, body").animate({ scrollTop: 0 }, 500);
+			});
+
+			// Reset 버튼
+			$(".reset-btn").on("click", function () {
+				$(".reset-overlay").addClass("reset-in");
+				setTimeout(() => {
+					location.reload(); // 간단한 초기화 방식
+				}, 1000);
+			});
+
+			document.addEventListener("animationend", function () {
+				const observer = new IntersectionObserver(
+					(entries) => {
+						entries.forEach((entry) => {
+							if (entry.isIntersecting) {
+								entry.target.classList.add("content-view");
+							} else {
+								entry.target.classList.remove("content-view");
+							}
+						});
+					},
+					{
+						threshold: 0.2, // 10% 보이면 감지
+					}
+				);
+
+				document.querySelectorAll(".contents").forEach((el) => {
+					observer.observe(el);
+				});
+			});
+		});
+	</script>
 </html>
