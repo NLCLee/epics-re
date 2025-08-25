@@ -2,9 +2,18 @@
 <html lang="ko">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="title" content="에픽스디자인 : 홈페이지 디자인 및 상세페이지 제작 전문 업체">
-		<meta property="og:image" content="https://storage.googleapis.com/cr-resource/image/db2dba16aaf9fa8295e332c8d2270796/epics/650/ddf9dba6852d8128453d58353bceeb3d.jpg?_1755676938" data-dynamic="true">
-		<link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/lzJ_1orLvePDWKXzMopwHuFztchJP_czjnTb2OpwAu_XQPB0qYj_KgpV8HQrlzw6Opq4Gq_INwnAp9BzHffiZVWqr0wcot1KoKgTm5s1_fXNfj5PV9RH=s0" sizes="196x196">
+		<meta
+			name="title"
+			content="에픽스디자인 : 홈페이지 디자인 및 상세페이지 제작 전문 업체" />
+		<meta
+			property="og:image"
+			content="https://storage.googleapis.com/cr-resource/image/db2dba16aaf9fa8295e332c8d2270796/epics/650/ddf9dba6852d8128453d58353bceeb3d.jpg?_1755676938"
+			data-dynamic="true" />
+		<link
+			rel="icon"
+			type="image/png"
+			href="https://lh3.googleusercontent.com/lzJ_1orLvePDWKXzMopwHuFztchJP_czjnTb2OpwAu_XQPB0qYj_KgpV8HQrlzw6Opq4Gq_INwnAp9BzHffiZVWqr0wcot1KoKgTm5s1_fXNfj5PV9RH=s0"
+			sizes="196x196" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 		<title>에픽스 디자인 | 홈페이지 디자인 및 상세페이지 제작 전문 업체</title>
@@ -70,7 +79,7 @@
 				position: fixed;
 				bottom: 60px;
 				right: 60px;
-				display: flex;
+				display: none;
 				width: 30px;
 				justify-content: space-between;
 				align-items: center;
@@ -262,6 +271,19 @@
 					transform: translateX(0);
 					opacity: 1;
 				}
+			}
+
+			.copyright {
+				font-family: "Paperlogy-4Regular";
+				position: absolute;
+				bottom: 15px;
+				right: 15px;
+				color: white;
+				font-size: 14px;
+				padding: 6px 12px;
+				border-radius: 5px;
+				border: 1px solid white;
+				opacity: 0.5;
 			}
 
 			/* .overlay-text {
@@ -1039,6 +1061,14 @@
 					width: 300px;
 					text-align: center;
 				}
+
+				.copyright {
+					font-size: 10px;
+				}
+
+				.prepare::before {
+					font-size: 30px;
+				}
 			}
 
 			@media (max-width: 375px) {
@@ -1119,6 +1149,10 @@
 					><span class="overlay-text">S</span>
 				</div>
 			</div>
+			<div class="copyright">
+				<span>Copyright © 2025 EPICS DESIGN STUDIO. All rights reserved.</span>
+			</div>
+
 			<div class="title-line main-title" id="title-epics">
 				<div class="text-box">
 					<span class="text-initial">E</span
@@ -1153,7 +1187,7 @@
 
 		<!-- 컨텐츠 -->
 		<div class="content-pages">
-			<!-- INDEX > EPICS DESIGN -->
+			<!-- INDEX > EPICS -->
 			<div class="content-page" id="page-epics" data-upper="home">
 				<div class="page-header">
 					<div class="back-btn">
@@ -1178,7 +1212,7 @@
 				</div>
 			</div>
 
-			<!-- INDEX > EPICS EPICS DESIGN > 회사소개서 OVERVIEW -->
+			<!-- INDEX > EPICS > 회사소개서 OVERVIEW -->
 			<div class="content-page" id="page-overview" data-upper="epics">
 				<div class="page-header">
 					<div class="back-btn">
@@ -1257,7 +1291,7 @@
 				</div>
 			</div>
 
-			<!--  INDEX > EPICS DESIGN > 비즈니스 제안서 PROPOSAL -->
+			<!--  INDEX > EPICS > 비즈니스 제안서 PROPOSAL -->
 			<div class="content-page" id="page-proposal" data-upper="epics">
 				<div class="page-header">
 					<div class="back-btn">
@@ -1311,7 +1345,7 @@
 					</div>
 				</div>
 			</div>
-			<!-- EPICS DESIGN 끝 -->
+			<!-- EPICS  끝 -->
 
 			<!-- PROJECT 시작 -->
 			<!-- INDEX > PROJECT -->
@@ -2172,6 +2206,16 @@
 				const $clicked = $(this);
 				const id = $clicked.attr("id"); // 예: "title-epics"
 				const key = id.split("title-")[1]; // "epics"
+				const upperkey = $("#page-" + key).data("upper");
+
+				//if문작성
+
+				if (["epics", "homepage", "detail", "products"].includes(upperkey)) {
+					// ✅ upperkey가 위 네 가지 중 하나일 때만 실행됨
+					$(".fixed-movetop").css("display", "flex");
+				} else {
+					$(".fixed-movetop").css("display", "none");
+				}
 
 				if (key === "marketing") return;
 				if (key === "brand") return;
@@ -2183,7 +2227,6 @@
 						$(".overlay-text").addClass("initial-move");
 						$(".text-initial").addClass("initial-collapse");
 					}, 300);
-					setTimeout(() => {}, 600);
 
 					setTimeout(() => {
 						$(".container").addClass("fade-out");
@@ -2213,7 +2256,7 @@
 
 				// 현재 페이지 숨기기
 				$currentPage.removeClass("page-show");
-
+				$(".fixed-movetop").css("display", "none");
 				// 상위 페이지 보여주기
 				if (upperPageKey == "home") {
 					$(".container").removeClass("fade-out");
@@ -2335,9 +2378,3 @@
 		});
 	</script>
 </html>
-
-
-
-
-
-
